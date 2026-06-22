@@ -189,7 +189,7 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:600; color:var(--teal-ink
 .journey-step p{ font-size:14.5px; color:#5C6764; }
 
 /* mini illustrative role mockups */
-.mockup{ height:92px; border-radius:10px; background:var(--mist); margin-top:16px; padding:10px; display:flex; align-items:center; }
+.mockup{ height:180px; border-radius:10px; background:var(--mist); margin-top:16px; padding:10px; display:flex; align-items:center; }
 .mockup-tables{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; width:100%; }
 .mockup-tables i{ aspect-ratio:1; border-radius:5px; background:var(--mist-line); }
 .mockup-tables i.occ{ background:var(--teal); }
