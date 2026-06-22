@@ -1,444 +1,526 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr" dir="ltr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nidhamy — Le logiciel de caisse pour restaurants</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2301696F'/%3E%3Ctext x='50' y='66' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700'%3EN%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-/* ============ TOKENS ============ */
-:root{
-  --teal:#01696F;
-  --teal-ink:#013A3D;
-  --paper:#FAF6EC;
-  --graphite:#1C2422;
-  --mist:#EEF2F1;
-  --mist-line:#DCE4E2;
-  --amber:#D97B29;
-  --white:#FFFFFF;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nidhamy — Le logiciel de caisse pour restaurants</title>
+    <meta
+      name="description"
+      content="Nidhamy connecte vos serveurs, votre cuisine et votre caisse en temps réel. Un logiciel de caisse pensé pour les restaurants, sur tablette, téléphone ou ordinateur."
+    />
+    <meta
+      property="og:title"
+      content="Nidhamy — Le logiciel de caisse pour restaurants"
+    />
+    <meta
+      property="og:description"
+      content="Un seul système, quatre rôles, zéro confusion. Découvrez Nidhamy."
+    />
+    <meta property="og:type" content="website" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2301696F'/%3E%3Ctext x='50' y='66' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700'%3EN%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a
+      class="skip-link"
+      href="#main"
+      data-fr="Aller au contenu"
+      data-ar="الانتقال إلى المحتوى"
+      >Aller au contenu</a
+    >
 
-  --font-display:'Space Grotesk', sans-serif;
-  --font-body:'Inter', sans-serif;
-  --font-mono:'JetBrains Mono', monospace;
-  --font-ar:'IBM Plex Sans Arabic', sans-serif;
-
-  --max:1180px;
-  --pad: clamp(20px, 5vw, 48px);
-}
-
-*{box-sizing:border-box; margin:0; padding:0;}
-html{scroll-behavior:smooth;}
-body{
-  font-family:var(--font-body);
-  color:var(--graphite);
-  background:var(--white);
-  line-height:1.5;
-  -webkit-font-smoothing:antialiased;
-}
-body.lang-ar{ font-family:var(--font-ar); }
-body.lang-ar h1, body.lang-ar h2, body.lang-ar h3, body.lang-ar .brand-name{ font-family:var(--font-ar); }
-
-img,svg{display:block;}
-a{color:inherit; text-decoration:none;}
-button{font:inherit; cursor:pointer; border:none; background:none; color:inherit;}
-ul{list-style:none;}
-
-:focus-visible{ outline:2px solid var(--teal); outline-offset:3px; border-radius:4px; }
-
-h1,h2,h3{ font-family:var(--font-display); font-weight:600; color:var(--teal-ink); letter-spacing:-0.01em; }
-
-.wrap{ max-width:var(--max); margin-inline:auto; padding-inline:var(--pad); }
-.section{ padding-block:clamp(56px,9vw,108px); }
-.eyebrow{
-  font-family:var(--font-mono); font-size:12.5px; letter-spacing:.12em; text-transform:uppercase;
-  color:var(--teal); font-weight:600; display:inline-flex; align-items:center; gap:8px;
-}
-.eyebrow::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--amber); }
-
-@media (prefers-reduced-motion: reduce){
-  *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
-}
-
-/* ============ REVEAL ============ */
-.reveal{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
-.reveal.is-visible{ opacity:1; transform:translateY(0); }
-
-/* ============ NAV ============ */
-.nav{
-  position:sticky; top:0; z-index:50; background:rgba(255,255,255,.88);
-  backdrop-filter:blur(8px); border-bottom:1px solid var(--mist-line);
-}
-.nav .wrap{ display:flex; align-items:center; justify-content:space-between; height:76px; gap:24px; }
-.brand{ display:flex; align-items:center; gap:10px; }
-.brand-mark{ width:34px; height:34px; border-radius:9px; background:var(--teal); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.brand-mark span{ color:#fff; font-family:var(--font-display); font-weight:700; font-size:17px; }
-.brand-name{ font-family:var(--font-display); font-weight:700; font-size:19px; color:var(--teal-ink); }
-
-.nav-links{ display:flex; align-items:center; gap:32px; font-size:15px; font-weight:500; color:var(--graphite); }
-.nav-links a{ opacity:.85; transition:opacity .15s ease; }
-.nav-links a:hover{ opacity:1; color:var(--teal); }
-
-.nav-right{ display:flex; align-items:center; gap:14px; }
-
-.lang-toggle{
-  display:flex; border:1px solid var(--mist-line); border-radius:999px; padding:3px; gap:2px;
-  font-family:var(--font-mono); font-size:12.5px; font-weight:600;
-}
-.lang-toggle button{ padding:6px 13px; border-radius:999px; color:var(--graphite); opacity:.55; transition:all .18s ease; }
-.lang-toggle button[aria-pressed="true"]{ background:var(--teal); color:#fff; opacity:1; }
-
-.btn{
-  display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  padding:11px 22px; border-radius:10px; font-weight:600; font-size:14.5px;
-  transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
-  white-space:nowrap;
-}
-.btn--primary{ background:var(--teal); color:#fff; }
-.btn--primary:hover{ background:var(--teal-ink); transform:translateY(-1px); box-shadow:0 8px 20px -8px rgba(1,105,111,.55); }
-.btn--ghost{ background:var(--mist); color:var(--teal-ink); }
-.btn--ghost:hover{ background:var(--mist-line); }
-.btn--outline{ border:1.5px solid var(--mist-line); color:var(--teal-ink); }
-.btn--outline:hover{ border-color:var(--teal); }
-.btn--sm{ padding:9px 16px; font-size:13.5px; }
-
-@media (max-width:880px){
-  .nav-links{ display:none; }
-}
-
-/* ============ HERO ============ */
-.hero{ padding-block:clamp(48px,8vw,88px) clamp(40px,7vw,72px); overflow:hidden; }
-.hero .wrap{ display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(32px,6vw,72px); align-items:center; }
-@media (max-width:920px){ .hero .wrap{ grid-template-columns:1fr; } }
-
-.hero-copy h1{ font-size:clamp(34px,4.6vw,54px); line-height:1.06; margin-bottom:20px; }
-.hero-copy p.lead{ font-size:clamp(16px,1.6vw,18px); color:#46524F; max-width:480px; margin-bottom:30px; }
-.eyebrow{ margin-bottom:18px; }
-
-.hero-ctas{ display:flex; flex-wrap:wrap; gap:12px; margin-bottom:28px; }
-
-.role-chips{ display:flex; flex-wrap:wrap; gap:8px 18px; font-family:var(--font-mono); font-size:12.5px; color:#5C6764; }
-.role-chips span{ display:inline-flex; align-items:center; gap:7px; }
-.role-chips span::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--amber); }
-
-/* ----- hero visual: order ticket ----- */
-.hero-visual{ position:relative; display:flex; justify-content:center; align-items:center; min-height:380px; }
-.blob{
-  position:absolute; width:320px; height:320px; background:var(--teal); opacity:.10;
-  border-radius:42% 58% 53% 47% / 48% 44% 56% 52%; filter:blur(2px);
-}
-.ticket-stage{ position:relative; width:min(310px,86%); }
-.ticket{
-  position:relative; background:var(--paper); width:100%; padding:26px 24px 34px;
-  box-shadow:0 30px 60px -24px rgba(1,58,61,.35), 0 2px 0 rgba(0,0,0,.02);
-  transform:rotate(-3.5deg);
-  clip-path:polygon(
-    0% 0%, 100% 0%, 100% calc(100% - 10px),
-    93.75% 100%, 87.5% calc(100% - 10px),
-    81.25% 100%, 75% calc(100% - 10px),
-    68.75% 100%, 62.5% calc(100% - 10px),
-    56.25% 100%, 50% calc(100% - 10px),
-    43.75% 100%, 37.5% calc(100% - 10px),
-    31.25% 100%, 25% calc(100% - 10px),
-    18.75% 100%, 12.5% calc(100% - 10px),
-    6.25% 100%, 0% calc(100% - 10px)
-  );
-  animation:float 7s ease-in-out infinite;
-}
-@keyframes float{ 0%,100%{ transform:rotate(-3.5deg) translateY(0); } 50%{ transform:rotate(-3.5deg) translateY(-9px); } }
-
-.ticket-head{ font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--teal); text-align:center; padding-bottom:14px; border-bottom:1.5px dashed #C9C0AC; }
-.ticket-table{ font-family:var(--font-mono); font-weight:700; font-size:22px; color:var(--teal-ink); margin:16px 0 14px; letter-spacing:.02em; }
-.ticket-line{ display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:13.5px; color:#3A4441; padding:4px 0; }
-.ticket-divider{ border-top:1.5px dashed #C9C0AC; margin:12px 0; }
-.ticket-total{ display:flex; justify-content:space-between; font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--teal-ink); }
-
-.stamp{
-  position:absolute; bottom:14px; inset-inline-end:-14px; border:2px solid var(--amber); color:var(--teal-ink);
-  font-family:var(--font-mono); font-weight:700; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase;
-  padding:6px 11px; border-radius:6px; background:var(--paper); transform:rotate(-9deg);
-}
-
-/* ============ JOURNEY (numbered, real sequence) ============ */
-.journey-head{ max-width:560px; margin-bottom:48px; }
-.journey-head h2{ font-size:clamp(26px,3.2vw,36px); margin-top:14px; }
-.journey-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--mist-line); border:1px solid var(--mist-line); border-radius:16px; overflow:hidden; }
-@media (max-width:920px){ .journey-grid{ grid-template-columns:repeat(2,1fr); } }
-@media (max-width:560px){ .journey-grid{ grid-template-columns:1fr; } }
-.journey-step{ background:#fff; padding:30px 26px; }
-.journey-num{ font-family:var(--font-mono); font-size:13px; color:var(--amber); font-weight:700; letter-spacing:.05em; }
-.journey-step h3{ font-size:18px; margin:14px 0 8px; }
-.journey-step p{ font-size:14.5px; color:#5C6764; }
-
-/* mini illustrative role mockups */
-.mockup{ height:92px; border-radius:10px; background:var(--mist); margin-top:16px; padding:10px; display:flex; align-items:center; }
-.mockup-tables{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; width:100%; }
-.mockup-tables i{ aspect-ratio:1; border-radius:5px; background:var(--mist-line); }
-.mockup-tables i.occ{ background:var(--teal); }
-.mockup-queue{ display:flex; flex-direction:column; gap:6px; width:100%; }
-.mockup-queue i{ display:block; height:14px; border-radius:4px; background:var(--mist-line); width:100%; }
-.mockup-queue i:nth-child(1){ background:var(--amber); width:70%; }
-.mockup-cash{ width:100%; display:flex; flex-direction:column; gap:7px; }
-.mockup-cash i{ display:block; height:8px; border-radius:3px; background:var(--mist-line); }
-.mockup-cash i:nth-child(1){ width:90%; } .mockup-cash i:nth-child(2){ width:60%; }
-.mockup-cash b{ display:block; height:20px; border-radius:5px; background:var(--teal); margin-top:4px; width:46%; }
-.mockup-stats{ display:flex; align-items:flex-end; gap:6px; width:100%; height:100%; }
-.mockup-stats i{ flex:1; border-radius:4px 4px 0 0; background:var(--mist-line); }
-.mockup-stats i:nth-child(1){ height:40%; } .mockup-stats i:nth-child(2){ height:70%; background:var(--teal); }
-.mockup-stats i:nth-child(3){ height:55%; } .mockup-stats i:nth-child(4){ height:90%; background:var(--amber); }
-
-/* ============ FEATURES ============ */
-.features{ background:var(--mist); }
-.features-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:28px; margin-top:48px; }
-@media (max-width:920px){ .features-grid{ grid-template-columns:repeat(2,1fr); } }
-@media (max-width:560px){ .features-grid{ grid-template-columns:1fr; } }
-.feature{ background:#fff; border-radius:16px; padding:26px; border:1px solid var(--mist-line); }
-.feature-icon{ width:38px; height:38px; border-radius:10px; background:var(--teal); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
-.feature h3{ font-size:16.5px; margin-bottom:8px; }
-.feature p{ font-size:14px; color:#5C6764; }
-
-/* ============ AVAILABILITY ============ */
-.avail .wrap{ display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
-@media (max-width:880px){ .avail .wrap{ grid-template-columns:1fr; } }
-.avail h2{ font-size:clamp(26px,3.2vw,34px); margin:14px 0 16px; }
-.avail p.lead{ color:#5C6764; max-width:440px; margin-bottom:28px; }
-.store-row{ display:flex; flex-wrap:wrap; gap:12px; }
-.store-btn{ display:flex; align-items:center; gap:10px; background:var(--teal-ink); color:#fff; border-radius:12px; padding:13px 18px; }
-.store-btn small{ display:block; font-size:10.5px; opacity:.75; font-family:var(--font-mono); letter-spacing:.04em; }
-.store-btn strong{ display:block; font-size:14.5px; font-weight:600; }
-.store-btn:hover{ background:var(--teal); }
-.store-icon{ width:20px; height:20px; flex-shrink:0; }
-
-.device-stack{ position:relative; height:300px; }
-.device{ position:absolute; border-radius:18px; background:#fff; border:1px solid var(--mist-line); box-shadow:0 20px 40px -20px rgba(1,58,61,.25); }
-.device-phone{ width:150px; height:260px; left:16%; top:10px; padding:14px 12px; }
-.device-tablet{ width:230px; height:170px; right:6%; top:80px; padding:16px; }
-.device-phone .bar, .device-tablet .bar{ height:9px; border-radius:4px; background:var(--mist-line); margin-bottom:9px; }
-.device-phone .bar:nth-child(1), .device-tablet .bar:nth-child(1){ width:55%; background:var(--teal); }
-.device-tablet .bar:nth-child(3){ width:40%; }
-
-/* ============ CTA BANNER ============ */
-.cta-banner{ background:var(--teal-ink); border-radius:24px; padding:clamp(40px,6vw,64px); text-align:center; }
-.cta-banner h2{ color:#fff; font-size:clamp(26px,3.4vw,38px); margin-bottom:14px; }
-.cta-banner p{ color:#BFD6D5; max-width:480px; margin-inline:auto; margin-bottom:30px; font-size:15.5px; }
-.cta-banner .btn--primary{ background:var(--amber); }
-.cta-banner .btn--primary:hover{ background:#C06B1F; box-shadow:0 8px 20px -8px rgba(217,123,41,.55); }
-
-/* ============ FOOTER ============ */
-footer{ border-top:1px solid var(--mist-line); padding-block:40px; margin-top:20px; }
-.footer-row{ display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
-.footer-links{ display:flex; gap:24px; font-size:14px; color:#5C6764; }
-.footer-links a:hover{ color:var(--teal); }
-.footer-note{ font-size:13px; color:#8A9492; font-family:var(--font-mono); }
-</style>
-</head>
-<body>
-
-<nav class="nav">
-  <div class="wrap">
-    <div class="brand">
-      <div class="brand-mark"><span>N</span></div>
-      <span class="brand-name">Nidhamy</span>
-    </div>
-    <div class="nav-links">
-      <a href="#parcours" data-fr="Comment ça marche" data-ar="كيف يعمل">Comment ça marche</a>
-      <a href="#fonctionnalites" data-fr="Fonctionnalités" data-ar="المميزات">Fonctionnalités</a>
-      <a href="#disponible" data-fr="Télécharger" data-ar="تحميل التطبيق">Télécharger</a>
-      <a href="#contact" data-fr="Contact" data-ar="تواصل معنا">Contact</a>
-    </div>
-    <div class="nav-right">
-      <div class="lang-toggle" role="group" aria-label="Langue">
-        <button id="btn-fr" aria-pressed="true">FR</button>
-        <button id="btn-ar" aria-pressed="false">AR</button>
-      </div>
-      <a class="btn btn--ghost btn--sm" href="#" data-fr="Se connecter" data-ar="تسجيل الدخول">Se connecter</a>
-    </div>
-  </div>
-</nav>
-
-<header class="hero">
-  <div class="wrap">
-    <div class="hero-copy reveal">
-      <span class="eyebrow" data-fr="Logiciel de caisse pour restaurants" data-ar="نظام صندوق لإدارة المطاعم">Logiciel de caisse pour restaurants</span>
-      <h1 data-fr="Votre restaurant, ticket par ticket." data-ar="أدر مطعمك، طلبًا بطلب.">Votre restaurant, ticket par ticket.</h1>
-      <p class="lead" data-fr="Nidhamy relie vos serveurs, votre cuisine et votre caisse en temps réel — sur tablette, téléphone ou ordinateur. Un seul système, quatre rôles, zéro confusion." data-ar="نظامي يربط النادل والمطبخ والصندوق في الوقت الفعلي — على الجهاز اللوحي أو الهاتف أو الحاسوب. نظام واحد، أربعة أدوار، بدون أي التباس.">Nidhamy relie vos serveurs, votre cuisine et votre caisse en temps réel — sur tablette, téléphone ou ordinateur. Un seul système, quatre rôles, zéro confusion.</p>
-      <div class="hero-ctas">
-        <a class="btn btn--primary" href="#disponible" data-fr="Télécharger l'application" data-ar="تنزيل التطبيق">Télécharger l'application</a>
-        <a class="btn btn--outline" href="#" data-fr="Ouvrir l'application web" data-ar="فتح تطبيق الويب">Ouvrir l'application web</a>
-      </div>
-      <div class="role-chips">
-        <span data-fr="Serveur" data-ar="نادل">Serveur</span>
-        <span data-fr="Cuisine" data-ar="مطبخ">Cuisine</span>
-        <span data-fr="Caisse" data-ar="صندوق">Caisse</span>
-        <span data-fr="Gérant" data-ar="مدير">Gérant</span>
-      </div>
-    </div>
-
-    <div class="hero-visual reveal">
-      <div class="blob" aria-hidden="true"></div>
-      <div class="ticket-stage">
-        <div class="ticket">
-          <div class="ticket-head">Nidhamy · Ticket</div>
-          <div class="ticket-table"><span data-fr="Table 04" data-ar="طاولة 04">Table 04</span></div>
-          <div class="ticket-line"><span data-fr="2× Couscous Royal" data-ar="2× كسكس ملكي">2× Couscous Royal</span><span>980 DA</span></div>
-          <div class="ticket-line"><span data-fr="1× Salade César" data-ar="1× سلطة قيصر">1× Salade César</span><span>320 DA</span></div>
-          <div class="ticket-line"><span data-fr="1× Citronnade" data-ar="1× عصير ليمون">1× Citronnade</span><span>150 DA</span></div>
-          <div class="ticket-divider"></div>
-          <div class="ticket-total"><span data-fr="Total" data-ar="المجموع">Total</span><span>1450 DA</span></div>
+    <nav class="nav">
+      <div class="wrap">
+        <div class="brand">
+          <div class="brand-mark"><span>N</span></div>
+          <span class="brand-name">Nidhamy</span>
         </div>
-        <div class="stamp" data-fr="En cuisine" data-ar="قيد التحضير">En cuisine</div>
-      </div>
-    </div>
-  </div>
-</header>
 
-<section class="section" id="parcours">
-  <div class="wrap">
-    <div class="journey-head reveal">
-      <span class="eyebrow" data-fr="Le parcours d'une commande" data-ar="رحلة الطلب">Le parcours d'une commande</span>
-      <h2 data-fr="De la table à la caisse, en quatre étapes." data-ar="من الطاولة إلى الصندوق، في أربع خطوات.">De la table à la caisse, en quatre étapes.</h2>
-    </div>
-    <div class="journey-grid reveal">
-      <div class="journey-step">
-        <span class="journey-num">01</span>
-        <h3 data-fr="Serveur" data-ar="النادل">Serveur</h3>
-        <p data-fr="Prend la commande à table en quelques secondes, depuis son téléphone." data-ar="يأخذ الطلب من الطاولة في ثوانٍ، من هاتفه مباشرة.">Prend la commande à table en quelques secondes, depuis son téléphone.</p>
-        <div class="mockup"><div class="mockup-tables"><i></i><i class="occ"></i><i></i><i class="occ"></i><i class="occ"></i><i></i><i></i><i class="occ"></i></div></div>
-      </div>
-      <div class="journey-step">
-        <span class="journey-num">02</span>
-        <h3 data-fr="Cuisine" data-ar="المطبخ">Cuisine</h3>
-        <p data-fr="Reçoit le ticket en direct, marque « en préparation » puis « prêt »." data-ar="يستقبل التذكرة مباشرة، ويضع «قيد التحضير» ثم «جاهز».">Reçoit le ticket en direct, marque « en préparation » puis « prêt ».</p>
-        <div class="mockup"><div class="mockup-queue"><i></i><i></i><i></i></div></div>
-      </div>
-      <div class="journey-step">
-        <span class="journey-num">03</span>
-        <h3 data-fr="Caisse" data-ar="الصندوق">Caisse</h3>
-        <p data-fr="Encaisse en un clic, la table se libère automatiquement." data-ar="يحصّل الدفع بنقرة واحدة، وتتحرر الطاولة تلقائيًا.">Encaisse en un clic, la table se libère automatiquement.</p>
-        <div class="mockup"><div class="mockup-cash"><i></i><i></i><b></b></div></div>
-      </div>
-      <div class="journey-step">
-        <span class="journey-num">04</span>
-        <h3 data-fr="Gérant" data-ar="المدير">Gérant</h3>
-        <p data-fr="Suit tout en direct : ventes, tables, équipe et menu." data-ar="يتابع كل شيء مباشرة: المبيعات، الطاولات، الفريق والقائمة.">Suit tout en direct : ventes, tables, équipe et menu.</p>
-        <div class="mockup"><div class="mockup-stats"><i></i><i></i><i></i><i></i></div></div>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="nav-links">
+          <a href="#parcours" data-fr="Comment ça marche" data-ar="كيف يعمل"
+            >Comment ça marche</a
+          >
+          <a
+            href="#fonctionnalites"
+            data-fr="Fonctionnalités"
+            data-ar="المميزات"
+            >Fonctionnalités</a
+          >
+          <a href="#disponible" data-fr="Télécharger" data-ar="تحميل التطبيق"
+            >Télécharger</a
+          >
+          <a href="#contact" data-fr="Contact" data-ar="تواصل معنا">Contact</a>
+        </div>
 
-<section class="section features" id="fonctionnalites">
-  <div class="wrap">
-    <span class="eyebrow reveal" data-fr="Pourquoi Nidhamy" data-ar="لماذا نظامي">Pourquoi Nidhamy</span>
-    <h2 class="reveal" style="font-size:clamp(26px,3.2vw,36px); margin-top:14px; max-width:520px;" data-fr="Pensé pour le rythme d'un vrai service." data-ar="مصمم لإيقاع الخدمة الحقيقية.">Pensé pour le rythme d'un vrai service.</h2>
-    <div class="features-grid">
-      <div class="feature reveal">
-        <div class="feature-icon"><svg class="store-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
-        <h3 data-fr="Temps réel" data-ar="الوقت الفعلي">Temps réel</h3>
-        <p data-fr="Chaque écran se met à jour instantanément, sans rafraîchir la page." data-ar="تتحدث كل الشاشات فورًا دون إعادة تحميل الصفحة.">Chaque écran se met à jour instantanément, sans rafraîchir la page.</p>
+        <div class="nav-right">
+          <div class="lang-toggle" role="group" aria-label="Langue">
+            <button id="btn-fr" aria-pressed="true">FR</button>
+            <button id="btn-ar" aria-pressed="false">AR</button>
+          </div>
+          <a
+            class="btn btn--ghost btn--sm"
+            href="#"
+            data-fr="Se connecter"
+            data-ar="تسجيل الدخول"
+            >Se connecter</a
+          >
+          <button
+            class="nav-toggle"
+            id="navToggle"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+            aria-label="Menu"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
       </div>
-      <div class="feature reveal">
-        <div class="feature-icon"><svg class="store-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></div>
-        <h3 data-fr="Multi-établissements" data-ar="متعدد المطاعم">Multi-établissements</h3>
-        <p data-fr="Chaque restaurant a ses propres données, isolées et sécurisées." data-ar="لكل مطعم بياناته الخاصة، معزولة وآمنة.">Chaque restaurant a ses propres données, isolées et sécurisées.</p>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-inner">
+          <a href="#parcours" data-fr="Comment ça marche" data-ar="كيف يعمل"
+            >Comment ça marche</a
+          >
+          <a
+            href="#fonctionnalites"
+            data-fr="Fonctionnalités"
+            data-ar="المميزات"
+            >Fonctionnalités</a
+          >
+          <a href="#disponible" data-fr="Télécharger" data-ar="تحميل التطبيق"
+            >Télécharger</a
+          >
+          <a href="#contact" data-fr="Contact" data-ar="تواصل معنا">Contact</a>
+        </div>
       </div>
-      <div class="feature reveal">
-        <div class="feature-icon"><svg class="store-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2.5"/><line x1="10" y1="19" x2="14" y2="19"/></svg></div>
-        <h3 data-fr="Pensé pour la salle" data-ar="مصمم لصالة المطعم">Pensé pour la salle</h3>
-        <p data-fr="Conçu pour tablettes et téléphones, debout, entre deux tables." data-ar="يعمل بسلاسة على الأجهزة اللوحية والهواتف، أثناء التنقل بين الطاولات.">Conçu pour tablettes et téléphones, debout, entre deux tables.</p>
+    </nav>
+
+    <main id="main">
+      <header class="hero">
+        <div class="wrap">
+          <div class="hero-copy reveal">
+            <span
+              class="eyebrow"
+              data-fr="Logiciel de caisse pour restaurants"
+              data-ar="نظام صندوق لإدارة المطاعم"
+              >Logiciel de caisse pour restaurants</span
+            >
+            <h1
+              data-fr="Votre restaurant, ticket par ticket."
+              data-ar="أدر مطعمك، طلبًا بطلب."
+            >
+              Votre restaurant, ticket par ticket.
+            </h1>
+            <p
+              class="lead"
+              data-fr="Nidhamy relie vos serveurs, votre cuisine et votre caisse en temps réel — sur tablette, téléphone ou ordinateur. Un seul système, quatre rôles, zéro confusion."
+              data-ar="نظامي يربط النادل والمطبخ والصندوق في الوقت الفعلي — على الجهاز اللوحي أو الهاتف أو الحاسوب. نظام واحد، أربعة أدوار، بدون أي التباس."
+            >
+              Nidhamy relie vos serveurs, votre cuisine et votre caisse en temps
+              réel — sur tablette, téléphone ou ordinateur. Un seul système,
+              quatre rôles, zéro confusion.
+            </p>
+            <div class="hero-ctas">
+              <a
+                class="btn btn--primary"
+                href="#disponible"
+                data-fr="Télécharger l'application"
+                data-ar="تنزيل التطبيق"
+                >Télécharger l'application</a
+              >
+              <a
+                class="btn btn--outline"
+                href="#"
+                data-fr="Ouvrir l'application web"
+                data-ar="فتح تطبيق الويب"
+                >Ouvrir l'application web</a
+              >
+            </div>
+            <div class="role-chips">
+              <span data-fr="Serveur" data-ar="نادل">Serveur</span>
+              <span data-fr="Cuisine" data-ar="مطبخ">Cuisine</span>
+              <span data-fr="Caisse" data-ar="صندوق">Caisse</span>
+              <span data-fr="Gérant" data-ar="مدير">Gérant</span>
+            </div>
+          </div>
+
+          <div class="hero-visual reveal">
+            <div class="blob" aria-hidden="true"></div>
+            <div class="ticket-stage">
+              <div class="ticket">
+                <div class="ticket-head">Nidhamy · Ticket</div>
+                <div class="ticket-table">
+                  <span data-fr="Table 04" data-ar="طاولة 04">Table 04</span>
+                </div>
+                <div class="ticket-line">
+                  <span data-fr="2× Couscous Royal" data-ar="2× كسكس ملكي"
+                    >2× Couscous Royal</span
+                  ><span>980 DA</span>
+                </div>
+                <div class="ticket-line">
+                  <span data-fr="1× Salade César" data-ar="1× سلطة قيصر"
+                    >1× Salade César</span
+                  ><span>320 DA</span>
+                </div>
+                <div class="ticket-line">
+                  <span data-fr="1× Citronnade" data-ar="1× عصير ليمون"
+                    >1× Citronnade</span
+                  ><span>150 DA</span>
+                </div>
+                <div class="ticket-divider"></div>
+                <div class="ticket-total">
+                  <span data-fr="Total" data-ar="المجموع">Total</span
+                  ><span>1450 DA</span>
+                </div>
+              </div>
+              <div class="stamp" data-fr="En cuisine" data-ar="قيد التحضير">
+                En cuisine
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="section" id="parcours">
+        <div class="wrap">
+          <div class="journey-head reveal">
+            <span
+              class="eyebrow"
+              data-fr="Le parcours d'une commande"
+              data-ar="رحلة الطلب"
+              >Le parcours d'une commande</span
+            >
+            <h2
+              data-fr="De la table à la caisse, en quatre étapes."
+              data-ar="من الطاولة إلى الصندوق، في أربع خطوات."
+            >
+              De la table à la caisse, en quatre étapes.
+            </h2>
+          </div>
+          <div class="journey-grid reveal">
+            <div class="journey-step">
+              <span class="journey-num">01</span>
+              <h3 data-fr="Serveur" data-ar="النادل">Serveur</h3>
+              <p
+                data-fr="Prend la commande à table en quelques secondes, depuis son téléphone."
+                data-ar="يأخذ الطلب من الطاولة في ثوانٍ، من هاتفه مباشرة."
+              >
+                Prend la commande à table en quelques secondes, depuis son
+                téléphone.
+              </p>
+              <div class="mockup">
+                <div class="mockup-tables">
+                  <i></i><i class="occ"></i><i></i><i class="occ"></i
+                  ><i class="occ"></i><i></i><i></i><i class="occ"></i>
+                </div>
+              </div>
+            </div>
+            <div class="journey-step">
+              <span class="journey-num">02</span>
+              <h3 data-fr="Cuisine" data-ar="المطبخ">Cuisine</h3>
+              <p
+                data-fr="Reçoit le ticket en direct, marque « en préparation » puis « prêt »."
+                data-ar="يستقبل التذكرة مباشرة، ويضع «قيد التحضير» ثم «جاهز»."
+              >
+                Reçoit le ticket en direct, marque « en préparation » puis «
+                prêt ».
+              </p>
+              <div class="mockup">
+                <div class="mockup-queue"><i></i><i></i><i></i></div>
+              </div>
+            </div>
+            <div class="journey-step">
+              <span class="journey-num">03</span>
+              <h3 data-fr="Caisse" data-ar="الصندوق">Caisse</h3>
+              <p
+                data-fr="Encaisse en un clic, la table se libère automatiquement."
+                data-ar="يحصّل الدفع بنقرة واحدة، وتتحرر الطاولة تلقائيًا."
+              >
+                Encaisse en un clic, la table se libère automatiquement.
+              </p>
+              <div class="mockup">
+                <div class="mockup-cash"><i></i><i></i><b></b></div>
+              </div>
+            </div>
+            <div class="journey-step">
+              <span class="journey-num">04</span>
+              <h3 data-fr="Gérant" data-ar="المدير">Gérant</h3>
+              <p
+                data-fr="Suit tout en direct : ventes, tables, équipe et menu."
+                data-ar="يتابع كل شيء مباشرة: المبيعات، الطاولات، الفريق والقائمة."
+              >
+                Suit tout en direct : ventes, tables, équipe et menu.
+              </p>
+              <div class="mockup">
+                <div class="mockup-stats"><i></i><i></i><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section features" id="fonctionnalites">
+        <div class="wrap">
+          <span
+            class="eyebrow reveal"
+            data-fr="Pourquoi Nidhamy"
+            data-ar="لماذا نظامي"
+            >Pourquoi Nidhamy</span
+          >
+          <h2
+            class="features-head reveal"
+            data-fr="Pensé pour le rythme d'un vrai service."
+            data-ar="مصمم لإيقاع الخدمة الحقيقية."
+          >
+            Pensé pour le rythme d'un vrai service.
+          </h2>
+          <div class="features-grid">
+            <div class="feature reveal">
+              <div class="feature-icon">
+                <svg
+                  class="store-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v5l3.5 2" />
+                </svg>
+              </div>
+              <h3 data-fr="Temps réel" data-ar="الوقت الفعلي">Temps réel</h3>
+              <p
+                data-fr="Chaque écran se met à jour instantanément, sans rafraîchir la page."
+                data-ar="تتحدث كل الشاشات فورًا دون إعادة تحميل الصفحة."
+              >
+                Chaque écran se met à jour instantanément, sans rafraîchir la
+                page.
+              </p>
+            </div>
+            <div class="feature reveal">
+              <div class="feature-icon">
+                <svg
+                  class="store-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2"
+                >
+                  <rect x="3" y="3" width="8" height="8" rx="1.5" />
+                  <rect x="13" y="3" width="8" height="8" rx="1.5" />
+                  <rect x="3" y="13" width="8" height="8" rx="1.5" />
+                  <rect x="13" y="13" width="8" height="8" rx="1.5" />
+                </svg>
+              </div>
+              <h3 data-fr="Multi-établissements" data-ar="متعدد المطاعم">
+                Multi-établissements
+              </h3>
+              <p
+                data-fr="Chaque restaurant a ses propres données, isolées et sécurisées."
+                data-ar="لكل مطعم بياناته الخاصة، معزولة وآمنة."
+              >
+                Chaque restaurant a ses propres données, isolées et sécurisées.
+              </p>
+            </div>
+            <div class="feature reveal">
+              <div class="feature-icon">
+                <svg
+                  class="store-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2"
+                >
+                  <rect x="5" y="2" width="14" height="20" rx="2.5" />
+                  <line x1="10" y1="19" x2="14" y2="19" />
+                </svg>
+              </div>
+              <h3 data-fr="Pensé pour la salle" data-ar="مصمم لصالة المطعم">
+                Pensé pour la salle
+              </h3>
+              <p
+                data-fr="Conçu pour tablettes et téléphones, debout, entre deux tables."
+                data-ar="يعمل بسلاسة على الأجهزة اللوحية والهواتف، أثناء التنقل بين الطاولات."
+              >
+                Conçu pour tablettes et téléphones, debout, entre deux tables.
+              </p>
+            </div>
+            <div class="feature reveal">
+              <div class="feature-icon">
+                <svg
+                  class="store-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path
+                    d="M3 12h18M12 3c2.5 2.5 3.5 6 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-6-3.5-9s1-6.5 3.5-9z"
+                  />
+                </svg>
+              </div>
+              <h3 data-fr="Bilingue" data-ar="ثنائي اللغة">Bilingue</h3>
+              <p
+                data-fr="Interface en français et en arabe, avec un support RTL complet."
+                data-ar="واجهة بالفرنسية والعربية، بدعم كامل للكتابة من اليمين لليسار."
+              >
+                Interface en français et en arabe, avec un support RTL complet.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section avail" id="disponible">
+        <div class="wrap">
+          <div class="reveal">
+            <span
+              class="eyebrow"
+              data-fr="Disponible partout"
+              data-ar="متوفر في كل مكان"
+              >Disponible partout</span
+            >
+            <h2
+              data-fr="Sur le téléphone du serveur, la tablette de la cuisine, ou le navigateur du gérant."
+              data-ar="على هاتف النادل، تابلت المطبخ، أو متصفح المدير."
+            >
+              Sur le téléphone du serveur, la tablette de la cuisine, ou le
+              navigateur du gérant.
+            </h2>
+            <p
+              class="lead"
+              data-fr="Nidhamy fonctionne où que se trouve votre équipe — installez l'application ou ouvrez simplement le navigateur."
+              data-ar="يعمل نظامي حيث يكون فريقك — ثبّت التطبيق أو افتح المتصفح فقط."
+            >
+              Nidhamy fonctionne où que se trouve votre équipe — installez
+              l'application ou ouvrez simplement le navigateur.
+            </p>
+            <div class="store-row">
+              <a class="store-btn" href="#">
+                <img
+                  src="svg/appstore.svg"
+                  alt="apple app store"
+                  style="width: 29px; height: 29px"
+                />
+                <span
+                  ><small data-fr="Télécharger sur" data-ar="نزّل من"
+                    >Télécharger sur</small
+                  ><strong>App Store</strong></span
+                >
+              </a>
+              <a class="store-btn" href="#">
+                <img
+                  src="svg/googleplay.svg"
+                  alt="google play store"
+                  style="width: 24px; height: 24px"
+                />
+                <span
+                  ><small data-fr="Disponible sur" data-ar="متوفر على"
+                    >Disponible sur</small
+                  ><strong>Google Play</strong></span
+                >
+              </a>
+              <a
+                class="store-btn"
+                href="https://nidhamy-next.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="svg/website.svg"
+                  alt="web application"
+                  style="width: 29px; height: 29px"
+                />
+                <span
+                  ><small data-fr="Ouvrir" data-ar="افتح">Ouvrir</small
+                  ><strong data-fr="Application Web" data-ar="تطبيق الويب"
+                    >Application Web</strong
+                  ></span
+                >
+              </a>
+            </div>
+          </div>
+          <div class="device-stack reveal" aria-hidden="true">
+            <div class="device device-tablet">
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+            </div>
+            <div class="device device-phone">
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="contact">
+        <div class="wrap">
+          <div class="cta-banner reveal">
+            <h2
+              data-fr="Prêt à moderniser votre restaurant ?"
+              data-ar="هل أنت مستعد لتطوير مطعمك؟"
+            >
+              Prêt à moderniser votre restaurant ?
+            </h2>
+            <p
+              data-fr="Parlez-nous de votre établissement — nous vous montrons Nidhamy en action sur vos propres tables."
+              data-ar="حدّثنا عن مطعمك — سنريك نظامي يعمل مباشرة على طاولاتك."
+            >
+              Parlez-nous de votre établissement — nous vous montrons Nidhamy en
+              action sur vos propres tables.
+            </p>
+            <a
+              class="btn btn--primary"
+              href="mailto:contact@nidhamy.app"
+              data-fr="Demander une démonstration"
+              data-ar="طلب عرض توضيحي"
+              >Demander une démonstration</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap footer-row">
+        <div class="brand">
+          <div class="brand-mark"><span>N</span></div>
+          <span class="brand-name">Nidhamy</span>
+        </div>
+        <div class="footer-links">
+          <a
+            href="#fonctionnalites"
+            data-fr="Fonctionnalités"
+            data-ar="المميزات"
+            >Fonctionnalités</a
+          >
+          <a href="#parcours" data-fr="Comment ça marche" data-ar="كيف يعمل"
+            >Comment ça marche</a
+          >
+          <a href="#contact" data-fr="Contact" data-ar="تواصل معنا">Contact</a>
+        </div>
+        <span
+          class="footer-note"
+          data-fr="© 2026 Nidhamy. Tous droits réservés."
+          data-ar="© 2026 نظامي. جميع الحقوق محفوظة."
+          >© 2026 Nidhamy. Tous droits réservés.</span
+        >
       </div>
-      <div class="feature reveal">
-        <div class="feature-icon"><svg class="store-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.5 6 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-6-3.5-9s1-6.5 3.5-9z"/></svg></div>
-        <h3 data-fr="Bilingue" data-ar="ثنائي اللغة">Bilingue</h3>
-        <p data-fr="Interface en français et en arabe, avec un support RTL complet." data-ar="واجهة بالفرنسية والعربية، بدعم كامل للكتابة من اليمين لليسار.">Interface en français et en arabe, avec un support RTL complet.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    </footer>
 
-<section class="section avail" id="disponible">
-  <div class="wrap">
-    <div class="reveal">
-      <span class="eyebrow" data-fr="Disponible partout" data-ar="متوفر في كل مكان">Disponible partout</span>
-      <h2 data-fr="Sur le téléphone du serveur, la tablette de la cuisine, ou le navigateur du gérant." data-ar="على هاتف النادل، تابلت المطبخ، أو متصفح المدير.">Sur le téléphone du serveur, la tablette de la cuisine, ou le navigateur du gérant.</h2>
-      <p class="lead" data-fr="Nidhamy fonctionne où que se trouve votre équipe — installez l'application ou ouvrez simplement le navigateur." data-ar="يعمل نظامي حيث يكون فريقك — ثبّت التطبيق أو افتح المتصفح فقط.">Nidhamy fonctionne où que se trouve votre équipe — installez l'application ou ouvrez simplement le navigateur.</p>
-      <div class="store-row">
-        <a class="store-btn" href="#">
-          <svg class="store-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          <span><small data-fr="Télécharger sur" data-ar="نزّل من">Télécharger sur</small><strong>App Store</strong></span>
-        </a>
-        <a class="store-btn" href="#">
-          <svg class="store-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          <span><small data-fr="Disponible sur" data-ar="متوفر على">Disponible sur</small><strong>Google Play</strong></span>
-        </a>
-        <a class="store-btn" href="#">
-          <svg class="store-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.5 6 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-6-3.5-9s1-6.5 3.5-9z"/></svg>
-          <span><small data-fr="Ouvrir" data-ar="افتح">Ouvrir</small><strong data-fr="Application Web" data-ar="تطبيق الويب">Application Web</strong></span>
-        </a>
-      </div>
-    </div>
-    <div class="device-stack reveal" aria-hidden="true">
-      <div class="device device-tablet"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-      <div class="device device-phone"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="contact">
-  <div class="wrap">
-    <div class="cta-banner reveal">
-      <h2 data-fr="Prêt à moderniser votre restaurant ?" data-ar="هل أنت مستعد لتطوير مطعمك؟">Prêt à moderniser votre restaurant ?</h2>
-      <p data-fr="Parlez-nous de votre établissement — nous vous montrons Nidhamy en action sur vos propres tables." data-ar="حدّثنا عن مطعمك — سنريك نظامي يعمل مباشرة على طاولاتك.">Parlez-nous de votre établissement — nous vous montrons Nidhamy en action sur vos propres tables.</p>
-      <a class="btn btn--primary" href="mailto:contact@nidhamy.app" data-fr="Demander une démonstration" data-ar="طلب عرض توضيحي">Demander une démonstration</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap footer-row">
-    <div class="brand">
-      <div class="brand-mark"><span>N</span></div>
-      <span class="brand-name">Nidhamy</span>
-    </div>
-    <div class="footer-links">
-      <a href="#fonctionnalites" data-fr="Fonctionnalités" data-ar="المميزات">Fonctionnalités</a>
-      <a href="#parcours" data-fr="Comment ça marche" data-ar="كيف يعمل">Comment ça marche</a>
-      <a href="#contact" data-fr="Contact" data-ar="تواصل معنا">Contact</a>
-    </div>
-    <span class="footer-note" data-fr="© 2026 Nidhamy. Tous droits réservés." data-ar="© 2026 نظامي. جميع الحقوق محفوظة.">© 2026 Nidhamy. Tous droits réservés.</span>
-  </div>
-</footer>
-
-<script>
-(function(){
-  var html = document.documentElement;
-  var body = document.body;
-  var btnFr = document.getElementById('btn-fr');
-  var btnAr = document.getElementById('btn-ar');
-  var nodes = document.querySelectorAll('[data-fr][data-ar]');
-
-  function setLang(lang){
-    nodes.forEach(function(el){ el.textContent = el.getAttribute('data-' + lang); });
-    if(lang === 'ar'){
-      html.setAttribute('lang','ar'); html.setAttribute('dir','rtl');
-      body.classList.add('lang-ar');
-      btnAr.setAttribute('aria-pressed','true'); btnFr.setAttribute('aria-pressed','false');
-    } else {
-      html.setAttribute('lang','fr'); html.setAttribute('dir','ltr');
-      body.classList.remove('lang-ar');
-      btnFr.setAttribute('aria-pressed','true'); btnAr.setAttribute('aria-pressed','false');
-    }
-  }
-  btnFr.addEventListener('click', function(){ setLang('fr'); });
-  btnAr.addEventListener('click', function(){ setLang('ar'); });
-
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('is-visible'); io.unobserve(e.target); } });
-  }, { threshold:0.12 });
-  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
-})();
-</script>
-</body>
+    <script src="script.js" defer></script>
+  </body>
 </html>
